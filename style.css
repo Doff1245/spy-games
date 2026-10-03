@@ -1,0 +1,224 @@
+/* ==========================================================================
+   APERTURE SCIENCE USER INTERFACE – FULL CODE WITH ZOOM
+   ========================================================================== */
+
+@import url('https://googleapis.com');
+
+body {
+    background-color: #18191b;
+    color: #e2e8f0;
+    font-family: 'Roboto Mono', monospace;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.portal-glow {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 20% 30%, rgba(0, 180, 216, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(247, 127, 0, 0.15) 0%, transparent 50%);
+    z-index: -1;
+}
+
+.aperture-screen {
+    width: 100%;
+    max-width: 900px;
+    background-color: #212428;
+    border: 3px solid #2d3139;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    position: relative;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #3f444e;
+    padding-bottom: 10px;
+    font-size: 12px;
+    color: #748094;
+    letter-spacing: 1px;
+}
+
+.aperture-brand {
+    font-weight: bold;
+    color: #f1f5f9;
+}
+
+.system-status {
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.chamber-sign {
+    display: flex;
+    background-color: #f8fafc;
+    color: #111827;
+    margin: 30px 0;
+    padding: 25px;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.chamber-number {
+    background-color: #111827;
+    color: #f8fafc;
+    font-family: 'Oswald', sans-serif;
+    font-size: 64px;
+    font-weight: 600;
+    padding: 10px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-right: 25px;
+    transition: transform 0.1s ease, box-shadow 0.3s ease;
+}
+
+.chamber-number:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 15px rgba(0, 180, 216, 0.5);
+}
+
+.chamber-number:active {
+    transform: scale(0.98);
+}
+
+.chamber-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chamber-info h1 {
+    margin: 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 38px;
+    letter-spacing: 2px;
+    line-height: 1;
+    color: #111827;
+    text-transform: uppercase;
+}
+
+.friend-statement {
+    margin: 8px 0 0 0;
+    font-size: 16px;
+    color: #4b5563;
+    font-weight: bold;
+}
+
+.data-section {
+    margin-top: 40px;
+}
+
+.section-title {
+    font-size: 11px;
+    color: #748094;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    border-left: 3px solid #748094;
+    padding-left: 8px;
+    text-transform: uppercase;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.photo-container {
+    background-color: #18191b;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
+    box-sizing: border-box;
+}
+
+.photo-container.blue-portal { border: 2px solid #00b4d8; }
+.photo-container.orange-portal { border: 2px solid #f77f00; }
+
+.photo-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+    cursor: pointer; /* Иконка лупы-пальца при наведении на фото */
+}
+
+.photo-container:hover {
+    transform: scale(1.04);
+}
+
+.bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    border-top: 2px solid #3f444e;
+    margin-top: 40px;
+    padding-top: 10px;
+    font-size: 11px;
+    color: #4a5568;
+}
+
+@media (max-width: 600px) {
+    .gallery { grid-template-columns: 1fr; }
+    .chamber-sign { flex-direction: column; align-items: center; }
+    .chamber-number { margin-right: 0; margin-bottom: 15px; }
+}
+
+@keyframes portalPulse {
+    0% { border-color: #00b4d8; box-shadow: 0 0 25px rgba(0, 180, 216, 0.5); }
+    50% { border-color: #f77f00; box-shadow: 0 0 25px rgba(247, 127, 0, 0.5); }
+    100% { border-color: #00b4d8; box-shadow: 0 0 25px rgba(0, 180, 216, 0.5); }
+}
+
+.aperture-screen.music-active {
+    animation: portalPulse 3s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   КРУТОЕ ПРИБЛИЖЕНИЕ ФОТО (MODAL WINDOW)
+   ========================================================================== */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(17, 24, 39, 0.9); /* Потемнение как в Aperture Labs */
+    backdrop-filter: blur(5px); /* Легкое размытие заднего фона */
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Класс, который делает окно видимым по клику */
+.modal.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal img {
+    max-width: 90%;
+    max-height: 85vh;
+    border-radius: 6px;
+    border: 3px solid #3f444e;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal.open img {
+    transform: scale(1); /* Плавное выплывание фото вперед */
+}

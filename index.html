@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aperture Science Hardware - Spy Games</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Твой музыкальный файл (назови его music.mp3) -->
+    <audio id="bg-music" src="music.mp3" loop></audio>
+
+    <div class="portal-glow"></div>
+
+    <div class="aperture-screen" id="terminal">
+        
+        <div class="top-bar">
+            <div class="aperture-brand">
+                <span class="logo-icon">🔊</span> APERTURE SCIENCE
+            </div>
+            <div class="system-status" id="status-text">SYS_STATUS: ACTIVE</div>
+        </div>
+
+        <!-- Клик по кубику «06» запускает музыку -->
+        <div class="chamber-sign">
+            <div class="chamber-number" id="music-btn" title="Click to play music" style="cursor: pointer;">
+                <span>06</span>
+            </div>
+            <div class="chamber-info">
+                <h1>SPY GAMES</h1>
+                <p class="friend-statement">He is my very good friend.</p>
+            </div>
+        </div>
+
+        <!-- Секция со скриншотами -->
+        <div class="data-section">
+            <div class="section-title">VISUAL DATA ATTACHMENTS (6 ITEMS)</div>
+            <div class="gallery">
+                <div class="photo-container blue-portal"><img src="spy1.jpg" alt="1" class="zoomable"></div>
+                <div class="photo-container orange-portal"><img src="spy2.jpg" alt="2" class="zoomable"></div>
+                <div class="photo-container blue-portal"><img src="spy3.jpg" alt="3" class="zoomable"></div>
+                <div class="photo-container orange-portal"><img src="spy4.jpg" alt="4" class="zoomable"></div>
+                <div class="photo-container blue-portal"><img src="spy5.jpg" alt="5" class="zoomable"></div>
+                <div class="photo-container orange-portal"><img src="spy6.jpg" alt="6" class="zoomable"></div>
+            </div>
+        </div>
+
+        <div class="bottom-bar">
+            <span>LAB_GRID_REF: #2026-SG</span>
+            <span>DO NOT REMOVE THIS TERMINAL</span>
+        </div>
+
+    </div>
+
+    <!-- Всплывающее окно для увеличенной фотки -->
+    <div id="photo-modal" class="modal">
+        <img id="modal-img" src="" alt="Zoomed Data">
+    </div>
+
+    <!-- Логика музыки и увеличения фото -->
+    <script>
+        // --- Логика Музыки ---
+        const btn = document.getElementById('music-btn');
+        const music = document.getElementById('bg-music');
+        const terminal = document.getElementById('terminal');
+        const statusText = document.getElementById('status-text');
+
+        btn.addEventListener('click', () => {
+            if (music.paused) {
+                music.play().catch(e => console.log("Click required to play audio"));
+                terminal.classList.add('music-active');
+                statusText.innerText = "SYS_STATUS: PLAYING_TRACK";
+                statusText.style.color = "#00b4d8";
+            } else {
+                music.pause();
+                terminal.classList.remove('music-active');
+                statusText.innerText = "SYS_STATUS: ACTIVE";
+                statusText.style.color = "#748094";
+            }
+        });
+
+        // --- Логика Увеличения Фото ---
+        const modal = document.getElementById('photo-modal');
+        const modalImg = document.getElementById('modal-img');
+        const zoomImages = document.querySelectorAll('.zoomable');
+
+        // Открытие по клику на любую фотку
+        zoomImages.forEach(img => {
+            img.addEventListener('click', () => {
+                modal.classList.add('open');
+                modalImg.src = img.src;
+            });
+        });
+
+        // Закрытие по клику в любое место экрана
+        modal.addEventListener('click', () => {
+            modal.classList.remove('open');
+        });
+    </script>
+
+</body>
+</html>
